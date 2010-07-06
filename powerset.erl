@@ -4,7 +4,7 @@
 %%%----------------------------------------------------------------------
 
 -module(powerset).
--export([run/0]).
+-export([run/0, cons/2]).
 
 %%%----------------------------------------------------------------------
 %%% Definitions
@@ -13,11 +13,16 @@
 %% List of functions to benchmark.
 -define(BENCH_FUNS,
 	[fun(X) -> ps1(X) end,
-	 fun(X) -> ps2(X) end]).
+	 fun(X) -> ps2(X) end,
+         fun(X) -> ps3(X) end,
+         fun(X) -> ps4(X) end]).
 
 %% List of lists to use for benchmarking.
 -define(BENCH_LISTS,
-	[lists:seq(1, 23),
+        [lists:seq(1, 20),
+         lists:seq(1, 21),
+         lists:seq(1, 22),
+         lists:seq(1, 23),
 	 lists:seq(1, 24),
 	 lists:seq(1, 25)]).
 
@@ -84,3 +89,17 @@ ps2([H | T]) -> P = ps2(T), ps2aux(H, P, []).
 
 ps2aux(_Head, [], Acc) -> Acc;
 ps2aux(Head, [H | T], Acc) -> ps2aux(Head, T, [H, [Head | H] | Acc]).
+
+ps3([]) -> [[]];
+ps3([H | T]) -> P = ps3(T), rpc:pmap({?MODULE, cons}, [H], P) ++ P.
+
+-spec cons([any()], any()) -> [any(),...].
+
+cons(T, H) -> [H | T].
+
+ps4(Lst) ->
+    N = length(Lst),
+    Max = trunc(math:pow(2, N)),
+    [[lists:nth(Pos + 1, Lst) || Pos <- lists:seq(0, N - 1),
+                               I band (1 bsl Pos) =/= 0]
+     || I <- lists:seq(0, Max - 1)].
