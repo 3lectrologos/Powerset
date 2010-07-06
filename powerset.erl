@@ -15,11 +15,15 @@
 	[fun(X) -> ps1(X) end,
 	 fun(X) -> ps2(X) end,
          fun(X) -> ps3(X) end,
-         fun(X) -> ps4(X) end]).
+         fun(X) -> ps4(X) end,
+         fun(X) -> ps5(X) end]).
 
 %% List of lists to use for benchmarking.
 -define(BENCH_LISTS,
-        [lists:seq(1, 20),
+        [lists:seq(1, 8),
+         lists:seq(1, 9),
+         lists:seq(1, 10),
+         lists:seq(1, 20),
          lists:seq(1, 21),
          lists:seq(1, 22),
          lists:seq(1, 23),
@@ -103,3 +107,10 @@ ps4(Lst) ->
     [[lists:nth(Pos + 1, Lst) || Pos <- lists:seq(0, N - 1),
                                I band (1 bsl Pos) =/= 0]
      || I <- lists:seq(0, Max - 1)].
+
+ps5([]) -> [[]];
+ps5(L)  -> lists:usort([[]|[[E] || E <- L]] ++ ps5aux(L, L, [])).
+
+ps5aux([], _L, Acc) -> Acc;
+ps5aux([H | T], L, Acc) ->
+    ps5aux(T, L, [lists:usort([H | E]) || E <- ps5(L -- [H])] ++ Acc).
