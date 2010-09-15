@@ -1,6 +1,6 @@
 %%%----------------------------------------------------------------------
 %%% Description: A (pretty geeky) powerset function benchmarking module.
-%%% Author: Alkis Gotovos
+%%% Authors: Alkis Gotovos, Maria Christakis
 %%%----------------------------------------------------------------------
 
 -module(powerset).
