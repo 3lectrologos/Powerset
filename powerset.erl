@@ -115,3 +115,4 @@ ps5aux([], _L, Acc) -> Acc;
 ps5aux([H | T], L, Acc) ->
     ps5aux(T, L, [lists:usort([H | E]) || E <- ps5(L -- [H])] ++ Acc).
 
+
